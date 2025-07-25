@@ -8,5 +8,9 @@ include_directories(include)
 
 add_executable(code
     src/Memory.cpp
+    src/Decoder.cpp
+    src/Register.cpp
+    src/RegisterFile.cpp
+    src/ALU.cpp
     src/main.cpp
 )

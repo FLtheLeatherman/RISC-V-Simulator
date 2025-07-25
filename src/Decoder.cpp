@@ -1,8 +1,9 @@
 #include "Decoder.hpp"
 
-void Instruction::Parse(uint32_t inst) {
-    uint32_t op_num = inst & 0x7F;
-    switch (op_num) {
+void Instruction::parse(uint32_t inst) {
+    uint32_t opNum = inst & 0x7F;
+    uint32_t funct3, funct7;
+    switch (opNum) {
         case 0x37: // LUI
             op = Opcode::kLUI;
             rd = (inst >> 7) & 0x1F;
@@ -28,7 +29,7 @@ void Instruction::Parse(uint32_t inst) {
             imm = inst >> 20;
             break;
         case 0x63: // B-type, from beq to bgeu
-            uint32_t funct3 = (inst >> 12) & 0x7;
+            funct3 = (inst >> 12) & 0x7;
             rs1 = (inst >> 15) & 0x1F;
             rs2 = (inst >> 20) & 0x1F;
             imm = ((inst & 0x80) << 3) // [11]
@@ -59,7 +60,7 @@ void Instruction::Parse(uint32_t inst) {
             }
             break;
         case 0x03: // I-type, from lb to lhu
-            uint32_t funct3 = (inst >> 12) & 0x7;   
+            funct3 = (inst >> 12) & 0x7;   
             rd = (inst >> 7) & 0x1F;
             rs1 = (inst >> 15) & 0x1F;
             imm = (inst >> 20) & 0xFFF;
@@ -83,7 +84,7 @@ void Instruction::Parse(uint32_t inst) {
             }
             break;
         case 0x32: // S-type, from sb to sh
-            uint32_t funct3 = (inst >> 12) & 0x7;
+            funct3 = (inst >> 12) & 0x7;
             rs1 = (inst >> 15) & 0x1F;
             rs2 = (inst >> 20) & 0x1F;
             imm = (inst >> 7) & 0x1f
@@ -103,7 +104,7 @@ void Instruction::Parse(uint32_t inst) {
                 }
             break;
         case 0x31: // I-type, from addi to srai
-            uint32_t funct3 = (inst >> 12) & 0x7;   
+            funct3 = (inst >> 12) & 0x7;   
             rd = (inst >> 7) & 0x1F;
             rs1 = (inst >> 15) & 0x1F;
             imm = inst >> 20;
@@ -132,7 +133,7 @@ void Instruction::Parse(uint32_t inst) {
                     break;
                 case 0x5:
                     shamt = (inst >> 20) & 0x1F;
-                    int32_t funct7 = inst >> 25;
+                    funct7 = inst >> 25;
                     if (funct7 == 0x0) { // srli
                         op = Opcode::kSRLI;
                     } else { // srai
@@ -144,8 +145,8 @@ void Instruction::Parse(uint32_t inst) {
             }
             break;
         case 0x33: // R-type, from add to and
-            uint32_t funct3 = (inst >> 12) & 0x7;   
-            uint32_t funct7 = inst >> 25;
+            funct3 = (inst >> 12) & 0x7;   
+            funct7 = inst >> 25;
             rd = (inst >> 7) & 0x1F;
             rs1 = (inst >> 15) & 0x1F;
             rs2 = (inst >> 20) & 0x1F;

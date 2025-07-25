@@ -2,6 +2,7 @@
 #define MEMORY_HPP
 
 #include "Utility.hpp"
+#include <iostream>
 
 class Memory {
 private:
@@ -9,6 +10,7 @@ private:
     uint8_t mem[MEM_SIZE];
 public:
     Memory();
+    void load();
     uint8_t read(uint32_t);
     uint16_t read_half_word(uint32_t);
     uint32_t read_word(uint32_t);

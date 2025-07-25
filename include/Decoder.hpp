@@ -15,7 +15,7 @@ private:
     uint32_t imm;
     uint32_t shamt;
 public:
-    void Parse(uint32_t);
+    void parse(uint32_t);
 };
 
 #endif // DECODER_HPP

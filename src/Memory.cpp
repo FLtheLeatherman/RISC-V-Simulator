@@ -1,5 +1,19 @@
 #include "Memory.hpp"
 
+void Memory::load() {
+    std::string str;
+    uint32_t addr;
+    while (getline(std::cin, str)) {
+        if (str[0] == '@') {
+            addr = std::stoi(str.substr(1), nullptr, 16);
+        } else {
+            for (int i = 0; i < str.size(); i += 3) {
+                write(addr, std::stoi(str.substr(i, 2), nullptr, 16));
+                addr ++;
+            }
+        }
+    }
+}
 Memory::Memory() {
     memset(mem, 0, sizeof(mem));
 }
@@ -10,7 +24,7 @@ uint16_t Memory::read_half_word(uint32_t addr) {
     return mem[addr] | (mem[addr + 1] << 8);
 }
 uint32_t Memory::read_word(uint32_t addr) {
-    return mem[addr] | (mem[addr + 1] << 8) | (mem[addr + 2] << 16) | (mem[addr + 3] << 32);
+    return mem[addr] | (mem[addr + 1] << 8) | (mem[addr + 2] << 16) | (mem[addr + 3] << 24);
 }
 void Memory::write(uint32_t addr, uint8_t imm) {
     mem[addr] = imm;
