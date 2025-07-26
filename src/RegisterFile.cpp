@@ -12,8 +12,8 @@ void RegisterFile::tick() {
         registers[i].tick();
     }
 }
-void RegisterFile::set_stat(uint32_t id, int robId) {
-    tag[id] = robId;
+void RegisterFile::set_stat(uint32_t id, int robEntry) {
+    tag[id] = robEntry;
 }
 void RegisterFile::set_val(uint32_t id, uint32_t val) {
     registers[id].set_nxt(val);

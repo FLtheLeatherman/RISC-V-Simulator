@@ -2,6 +2,7 @@
 #define RS_HPP
 
 #include "ALU.hpp"
+#include "Decoder.hpp"
 
 class ReservationStation {
 private:
@@ -9,6 +10,7 @@ private:
         int robEntry;
         CalcType type;
         bool busy;
+        bool ready;
         uint32_t Dest;
         uint32_t Vj, Vk;
         int Qj, Qk;

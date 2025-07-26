@@ -188,3 +188,9 @@ void Instruction::parse(uint32_t inst) {
             break;
     }
 }
+uint32_t Instruction::dest() {
+    return rd;
+}
+Opcode Instruction::op() {
+    return op;
+}

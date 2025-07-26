@@ -1,42 +1,58 @@
 #include "ALU.hpp"
 
-bool ALU::is_busy() {
-    return busy;
+bool ALU::available() {
+    return !busy;
 }
 void ALU::tick() {
     busy = false;
 }
-uint32_t ALU::run(CalcType type, uint32_t val1, uint32_t val2) {
+void ALU::run(CalcType type, uint32_t val1, uint32_t val2, int robEntry) {
+    uint32_t res;
     busy = true;
     switch (type){
         case kAdd:
-            return val1 + val2;
+            res = val1 + val2;
+            break;
         case kSub:
-            return val1 - val2;
+            res = val1 - val2;
+            break;
         case kShiftL:
-            return val1 << val2;
+            res = val1 << val2;
+            break;
         case kShiftR:
-            return val1 >> val2;
+            res = val1 >> val2;
+            break;
         case kAnd:
-            return val1 & val2;
+            res = val1 & val2;
+            break;
         case kOr:
-            return val1 | val2;
+            res = val1 | val2;
+            break;
         case kXor:
-            return val1 ^ val2;
+            res = val1 ^ val2;
+            break;
         case kEqual:
-            return val1 == val2;
+            res = val1 == val2;
+            break;
         case kNotEqual:
-            return val1 != val2;
+            res = val1 != val2;
+            break;
         case kLess:
-            return val1 < val2;
+            res = val1 < val2;
+            break;
         case kLessEqual:
-            return val1 <= val2;
+            res = val1 <= val2;
+            break;
         case kGreater:
-            return val1 > val2;
+            res = val1 > val2;
+            break;
         case kGreaterEqual:
-            return val1 >= val2;
+            res = val1 >= val2;
+            break;
         default:
             break;
     }
-    return -114;
+    rob->update(robEntry, res);
+    // @todo
+    // call rs to update next
 }
