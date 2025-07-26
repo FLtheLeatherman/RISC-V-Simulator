@@ -17,7 +17,6 @@ private:
 public:
     void parse(uint32_t);
     uint32_t dest();
-    Opcode op();
 };
 
 #endif // DECODER_HPP

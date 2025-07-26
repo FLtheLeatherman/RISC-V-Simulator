@@ -13,6 +13,8 @@ public:
     void set_val(T);
     void set_nxt(T);
     void tick();
+    operator T();
+    void operator =(T RHS);
 };
 
 template<typename T>
@@ -34,6 +36,14 @@ void Register<T>::set_nxt(T v) {
 template<typename T>
 void Register<T>::tick() {
     val = nxt;
+}
+template<typename T>
+Register<T>::operator T() {
+    return val;
+}
+template<typename T>
+void Register<T>::operator =(T RHS) {
+    nxt = RHS;
 }
 
 #endif // REGISTER_HPP

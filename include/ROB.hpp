@@ -6,17 +6,17 @@
 #include "Memory.hpp"
 
 enum RoBType {
-    kReg, kLoadByte, kLoadHalf, kLoadWord;
+    kReg, kLoadByte, kLoadHalf, kLoadWord,
 };
 
 class ReorderBuffer {
 private:
     struct RoBEntry {
-        bool ready;
-        bool busy;
-        RoBType type;
-        uint32_t val;
-        uint32_t dest;
+        Register<bool> ready;
+        Register<bool> busy;
+        Register<RoBType> type;
+        Register<uint32_t> val;
+        Register<uint32_t> dest;
     };
     static constexpr int BUFFER_SIZE = 16;
     int head, tail;
@@ -30,6 +30,7 @@ public:
     void insert(Instruction); // 加入一条指令
     void update(int, uint32_t); // 更新某条指令的状态
     void commit(); // 把值 commit 一下
+    void run();
 };
 
 #endif // ROB_HPP

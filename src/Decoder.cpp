@@ -191,6 +191,3 @@ void Instruction::parse(uint32_t inst) {
 uint32_t Instruction::dest() {
     return rd;
 }
-Opcode Instruction::op() {
-    return op;
-}

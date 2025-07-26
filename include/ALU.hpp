@@ -3,15 +3,15 @@
 
 #include "Utility.hpp"
 #include "ROB.hpp"
+#include "RS.hpp"
 
-enum CalcType {
-    kAdd, kSub, kShiftL, kShiftR, kAnd, kOr, kXor, kEqual, kNotEqual, kLess, kLessEqual, kGreater, kGreaterEqual, kDefault,
-};
+class ReservationStation;
 
 class ALU {
 private:
     bool busy;
     ReorderBuffer *rob;
+    ReservationStation *rs;
 public:
     bool available();
     void tick();

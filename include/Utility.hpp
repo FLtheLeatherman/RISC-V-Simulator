@@ -5,4 +5,8 @@
 #include <cstring>
 #include <string>
 
+enum CalcType {
+    kAdd, kSub, kShiftL, kShiftR, kAnd, kOr, kXor, kEqual, kNotEqual, kLess, kLessEqual, kGreater, kGreaterEqual, kDefault,
+};
+
 #endif // UTILS_HPP

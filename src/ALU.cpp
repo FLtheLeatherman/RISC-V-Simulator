@@ -53,6 +53,7 @@ void ALU::run(CalcType type, uint32_t val1, uint32_t val2, int robEntry) {
             break;
     }
     rob->update(robEntry, res);
+    rs->update(robEntry, res);
     // @todo
-    // call rs to update next
+    // call lsb to update next
 }

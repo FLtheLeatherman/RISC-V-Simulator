@@ -12,5 +12,8 @@ add_executable(code
     src/Register.cpp
     src/RegisterFile.cpp
     src/ALU.cpp
+    src/RS.cpp
+    src/ROB.cpp
+    src/IQ.cpp
     src/main.cpp
 )
