@@ -15,11 +15,13 @@ void ReorderBuffer::tick() {
 bool ReorderBuffer::available() {
     return !cir_que[tail].busy;
 }
-void ReorderBuffer::insert(Instruction inst) {
+int ReorderBuffer::insert(Instruction inst) {
     cir_que[tail].busy = true;
     cir_que[tail].ready = false;
     cir_que[tail].dest = inst.dest();
+    int res = tail;
     tail = (tail + 1) % BUFFER_SIZE;
+    return tail;
 }
 void ReorderBuffer::update(int robEntry, uint32_t val) {
     cir_que[robEntry].ready = true;
@@ -42,7 +44,7 @@ void ReorderBuffer::commit() {
     }
     cir_que[head].busy = false;
     cir_que[head].ready = false;
-    head++;
+    head = (head + 1) % BUFFER_SIZE;
 }
 void ReorderBuffer::run() {
     if (head == tail) return;
