@@ -16,7 +16,7 @@ void RegisterFile::set_stat(uint32_t id, int robEntry) {
     tag[id] = robEntry;
 }
 void RegisterFile::set_val(uint32_t id, uint32_t val) {
-    registers[id].set_nxt(val);
+    registers[id] = val;
 }
 bool RegisterFile::is_busy(uint32_t id) {
     return (id != 0) && tag[id] >= 0;

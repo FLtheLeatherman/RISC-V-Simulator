@@ -1,12 +1,13 @@
 #include "LSB.hpp"
 
 LoadStoreBuffer::LoadStoreBuffer() {
-    head = tail = 0;
+    head = 0;
+    tail = 0;
 }
 bool LoadStoreBuffer::available() {
     return !cir_que[tail].busy;
 }
-void LoadStoreBuffer::insert() {
+int LoadStoreBuffer::insert() {
     cir_que[tail].ready = false;
     cir_que[tail].busy = true;
     int res = tail;
@@ -22,6 +23,7 @@ bool LoadStoreBuffer::is_head(int id) {
 void LoadStoreBuffer::tick() {
     head.tick(), tail.tick();
     for (int i = 0; i < BUFFER_SIZE; ++i) {
-        cir_que[i].tick();
+        cir_que[i].ready.tick();
+        cir_que[i].busy.tick();
     }
 }

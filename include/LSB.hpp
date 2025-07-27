@@ -6,8 +6,8 @@
 class LoadStoreBuffer {
 private:
     struct LSBEntry {
-        bool ready;
-        bool busy;
+        Register<bool> ready;
+        Register<bool> busy;
     };
     static constexpr int BUFFER_SIZE = 16;
     Register<int> head, tail;
@@ -15,7 +15,7 @@ private:
 public:
     LoadStoreBuffer();
     bool available();
-    void insert();
+    int insert();
     void update(int);
     bool is_head(int);
     void tick();

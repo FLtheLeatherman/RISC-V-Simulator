@@ -4,6 +4,10 @@
 #include "Utility.hpp"
 #include "Decoder.hpp"
 #include "Register.hpp"
+#include "Predictor.hpp"
+#include "RS.hpp"
+#include "ROB.hpp"
+#include "LSB.hpp"
 
 class InstructionQueue {
 private:
@@ -12,11 +16,15 @@ private:
         Register<uint32_t> inst;
     };
     static constexpr int QUE_SIZE = 16;
-    int head, tail;
-    IQEntry cir_queue[16];
+    Register<int> head, tail;
+    IQEntry cir_que[16];
+    Predictor *predictor;
+    ReservationStation *rs;
+    ReorderBuffer *rob;
+    LoadStoreBuffer *lsb;
 public:
     InstructionQueue();
-    bool insertInst(Instruction); // 尝试向队中插入一个新指令，返回 PC 是否需要变化
+    int insertInst(uint32_t); // 尝试向队中插入一个新指令，返回下一步的 PC 增量
     void launchInst(); // 把已经在队中的指令发射
     void run();
     void tick();

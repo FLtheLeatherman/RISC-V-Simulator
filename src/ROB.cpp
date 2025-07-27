@@ -4,6 +4,7 @@ ReorderBuffer::ReorderBuffer() {
     head = 0, tail = 0;
 }
 void ReorderBuffer::tick() {
+    head.tick(), tail.tick();
     for (int i = 0; i < BUFFER_SIZE; ++i) {
         cir_que[i].ready.tick();
         cir_que[i].busy.tick();
@@ -15,10 +16,11 @@ void ReorderBuffer::tick() {
 bool ReorderBuffer::available() {
     return !cir_que[tail].busy;
 }
-int ReorderBuffer::insert(Instruction inst) {
+int ReorderBuffer::insert(Instruction inst, RoBType type) {
     cir_que[tail].busy = true;
     cir_que[tail].ready = false;
     cir_que[tail].dest = inst.dest();
+    cir_que[tail].type = type;
     int res = tail;
     tail = (tail + 1) % BUFFER_SIZE;
     return tail;

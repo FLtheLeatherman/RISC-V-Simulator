@@ -3,9 +3,11 @@
 
 class CPU {
 private:
-    int program_counter;
+    uint32_t program_counter;
+    uint32_t clock;
 public:
-    
+    CPU();
+    void run();
 }
 
 #endif CPU_HPP

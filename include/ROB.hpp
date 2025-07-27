@@ -6,9 +6,12 @@
 #include "Memory.hpp"
 
 enum RoBType {
-    kReg, kLoadByte, kLoadHalf, kLoadWord,
+    kReg, kLoadByte, kLoadHalf, kLoadWord, kHalt, kBranch,
 };
 
+
+// @todo
+// 把它修改为其它指令也能用，包括 load, store, 跳转等
 class ReorderBuffer {
 private:
     struct RoBEntry {
@@ -27,7 +30,7 @@ public:
     ReorderBuffer();
     void tick(); // 检查队头能否 commit 即可
     bool available(); // 目前能否插入
-    int insert(Instruction); // 加入一条指令
+    int insert(Instruction, RoBType); // 加入一条指令
     void update(int, uint32_t); // 更新某条指令的状态
     void commit(); // 把值 commit 一下
     void run();
