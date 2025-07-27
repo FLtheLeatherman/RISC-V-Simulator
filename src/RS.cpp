@@ -1,6 +1,10 @@
 #include "RS.hpp"
 
-ReservationStation::ReservationStation() {
+ReservationStation::ReservationStation(ALU *alu_, RegisterFile *rf_, ReorderBuffer *rob_, LoadStoreBuffer *lsb_) {
+    alu = alu_;
+    rf = rf_;
+    rob = rob_;
+    lsb = lsb_;
     for (int i = 0; i < STATION_SIZE; ++i) {
         info[i].busy = false;
     }
@@ -15,7 +19,7 @@ bool ReservationStation::available() {
     }
     return res;
 }
-void ReservationStation::insert(CalcType calc_type, DataType data_type, uint32_t val1, uint32_t val2, uint32_t val3, uint32_t dest, int robEntry) {
+void ReservationStation::insert(CalcType calc_type, DataType data_type, uint32_t val1, uint32_t val2, uint32_t val3, int rob_entry) {
     int pos = -1;
     for (int i = 0; i < STATION_SIZE; ++i) {
         if (!info[i].busy) {
@@ -23,51 +27,15 @@ void ReservationStation::insert(CalcType calc_type, DataType data_type, uint32_t
             break;
         }
     }
-    info[pos].robEntry = robEntry;
-    info[pos].type = calc_type;
+    info[pos].rob_entry = rob_entry;
+    info[pos].calc_type = calc_type;
+    info[pos].data_type = data_type;
     info[pos].busy = true;
     info[pos].ready = false;
-    info[pos].dest = dest;
-    int Qj, Qk;
-    switch (data_type) {
-        case kTwoReg: // val1, val2 是两个寄存器
-            Qj = rf->get_tag(val1), Qk = rf->get_tag(val2);
-            info[pos].Qj = Qj;
-            if (Qj == -1) {
-                info[pos].Vj = rf->get_val(val1);
-            }
-            info[pos].Qk = Qk;
-            if (Qk == -1) {
-                info[pos].Vk = rf->get_val(val2);
-            }
-            break;
-        case kRegImm:
-            Qj = rf->get_tag(val1);
-            info[pos].Qj = Qj;
-            if (Qj == -1) {
-                info[pos].Vj = rf->get_val(val1);
-            }
-            info[pos].Vk = val2;
-            info[pos].Qk = -1;
-            break;
-        case kTwoRegImm:
-            Qj = rf->get_tag(val1), Qk = rf->get_tag(val2);
-            info[pos].Qj = Qj;
-            if (Qj == -1) {
-                info[pos].Vj = rf->get_val(val1);
-            }
-            info[pos].Qk = Qk;
-            if (Qk == -1) {
-                info[pos].Vk = rf->get_val(val2);
-            }
-            info[pos].A = val3;
-            break;
-        case kImm:    
-            info[pos].Qj = -1;
-            info[pos].Vj = val1;
-            break;
-        default:
-            break;
+    if (data_type == DataType::kTwoReg) {
+        if (rf->readable(val1, rob_entry)) {
+            
+        }
     }
 }
 void ReservationStation::update(int robEntry, uint32_t val) {
@@ -91,26 +59,35 @@ void ReservationStation::run() {
     for (int i = 0; i < STATION_SIZE; ++i) {
         if (info[i].busy && info[i].ready) {
             if (alu->available()) {
-                alu->run(info[i].type, info[i].Vj, info[i].Vk, info[i].robEntry);
+                alu->run(info[i].calc_type, info[i].Vj, info[i].Vk, info[i].rob_entry);
                 break;
             }
         }
     }
 }
 void ReservationStation::tick() {
+    if (need_flush) {
+        flush();
+    } else {
+        run();
+    }
+    need_flush.tick();
     for (int i = 0; i < STATION_SIZE; ++i) {
-        info[i].robEntry.tick();
-        info[i].type.tick();
+        info[i].rob_entry.tick();
+        info[i].calc_type.tick();
         info[i].busy.tick();
         info[i].ready.tick();
-        info[i].dest.tick();
         info[i].Vj.tick();
         info[i].Vk.tick();
         info[i].A.tick();
         info[i].Qj.tick();
         info[i].Qk.tick();
+        info[i].data_type.tick();
     }
 }
 void ReservationStation::set_flush() {
-    
+    need_flush = true;
+}
+void ReservationStation::flush() {
+
 }

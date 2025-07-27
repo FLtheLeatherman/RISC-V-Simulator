@@ -2,38 +2,66 @@
 
 RegisterFile::RegisterFile() {
     for (int i = 0; i < REG_NUM; ++i) {
-        registers[i].set_val(0);
-        registers[i].set_nxt(0);
+        registers[i] = 0;
+        busy[i] = false;
         tag[i] = -1;
     }
 }
 void RegisterFile::tick() {
+    if (need_flush) {
+        flush();
+    }
+    need_flush.tick();
     for (int i = 0; i < REG_NUM; ++i) {
+        write_tag[i].tick();
+        clear_tag[i].tick();
+        if (write_tag[i]) {
+            busy[i] = true;
+        } else if (clear_tag[i]) {
+            busy[u] = false;
+            tag[i] = -1;
+        }
+        write_tag[i] = false;
+        clear_tag[i] = false;
+        busy[i].tick();
+        tag[i].tick();
         registers[i].tick();
     }
 }
-void RegisterFile::set_stat(uint32_t id, int robEntry) {
-    tag[id] = robEntry;
+void RegisterFile::write_tag(uint32_t id, int rob_entry) {
+    if (reg == 0) return;
+    write_tag[id] = true;
+    tag[id] = rob_entry;
+    busy[reg] = true;
 }
-void RegisterFile::set_val(uint32_t id, uint32_t val) {
-    registers[id] = val;
-}
-bool RegisterFile::is_busy(uint32_t id) {
-    return (id != 0) && tag[id] >= 0;
-}
-int RegisterFile::get_tag(uint32_t id) {
+int RegisterFile::read_tag(uint32_t id) {
     return tag[id];
 }
-uint32_t RegisterFile::get_val(uint32_t id) {
-    return registers[id].get_val();
+uint32_t RegisterFile::read_reg(uint32_t id) {
+    return id == 0 ? 0 : registers[id];
 }
 void RegisterFile::write_reg(uint32_t reg, uint32_t val, int rob_entry) {
     if (reg == 0) return;
     registers[reg] = val;
     if (busy[reg] && tag[reg] == rob_entry) {
-        clear[reg] = true;
+        clear_tag[reg] = true;
     }
 }
 void RegisterFile::set_flush() {
-    
+    need_flush = true;
+}
+void RegisterFile::flush() {
+    for (int i = 0; i < REG_NUM; ++i) {
+        busy[i] = false;
+        tag[i] = 0;
+    }
+    need_flush = false;
+}
+bool RegisterFile::readable(uint32_t id, int rob_entry) {
+    return id == 0 || (!busy[id] || tag[id] == rob_entry);
+}
+void RegisterFile::run() {
+    if (need_flush) {
+        flush();
+    }
 }

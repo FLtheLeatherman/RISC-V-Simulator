@@ -13,5 +13,6 @@ class ReorderBuffer;
 class ReservationStation;
 class InstructionQueue;
 class ALU;
+class LoadStoreBuffer;
 
 #endif // UTILS_HPP

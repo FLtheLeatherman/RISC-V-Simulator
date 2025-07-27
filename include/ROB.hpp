@@ -40,7 +40,7 @@ public:
     bool available(); // 目前能否插入
     int insert(RoBType, uint32_t, uint32_t, uint32_t); // 加入一条指令
     void update(int); // 更新某条指令的状态
-    void update_store(int, uint32_t, uint32_t);
+    void update(int, uint32_t, uint32_t);
     void update(int, uint32_t);
     void commit(); // 把值 commit 一下
     void run();

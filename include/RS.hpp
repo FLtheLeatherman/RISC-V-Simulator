@@ -1,6 +1,7 @@
 #ifndef RS_HPP
 #define RS_HPP
 
+#include "Utility.hpp"
 #include "ALU.hpp"
 #include "Decoder.hpp"
 #include "RegisterFile.hpp"
@@ -13,28 +14,31 @@ enum DataType {
 class ReservationStation {
 private:
     struct RSEntry {
-        Register<int> robEntry;
-        Register<CalcType> type;
+        Register<int> rob_entry;
+        Register<CalcType> calc_type;
+        Register<DataType> data_type;
         Register<bool> busy;
         Register<bool> ready;
-        Register<uint32_t> dest;
         Register<uint32_t> Vj, Vk;
         Register<uint32_t> A; // Imm
         Register<int> Qj, Qk;
     };
     static constexpr int STATION_SIZE = 16;
     RSEntry info[STATION_SIZE];
+    Register<bool> need_flush;
     ALU *alu;
     RegisterFile *rf;
     ReorderBuffer *rob;
+    LoadStoreBuffer *lsb;
 public:
-    ReservationStation();
+    ReservationStation(ALU*, RegisterFile*, ReorderBuffer*, LoadStoreBuffer*);
     bool available();
-    void insert(CalcType, DataType, uint32_t, uint32_t, uint32_t, uint32_t, int); // 加入一条指令
+    void insert(CalcType, DataType, uint32_t, uint32_t, uint32_t, int); // 加入一条指令
     void update(int, uint32_t); // 更新单个指令的值
     void run(); // 如果可以的话送到 ALU 进行计算.
     void tick();
     void set_flush();
+    void flush();
 };
 
 #endif // RS_HPP

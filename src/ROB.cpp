@@ -46,7 +46,7 @@ int ReorderBuffer::insert(RoBType type, uint32_t val, uint32_t dest, uint32_t pc
     int res = tail;
     tail = (tail + 1) % BUFFER_SIZE;
     if (type == RoBType::kReg || type == RoBType::kJalr) {
-        rf->set_stat(dest, res);
+        rf->write_tag(dest, res);
     }
     return res;
 }
@@ -54,7 +54,7 @@ void ReorderBuffer::update(int rob_entry) {
     cir_que[rob_entry].ready = true;
     rs->update(rob_entry, cir_que[rob_entry].val);
 }
-void ReorderBuffer::update_store(int rob_entry, uint32_t val, uint32_t dest) {
+void ReorderBuffer::update(int rob_entry, uint32_t val, uint32_t dest) {
     cir_que[rob_entry].ready = true;
     cir_que[rob_entry].lsb_entry = cir_que[rob_entry].val;
     cir_que[rob_entry].val = val;
@@ -111,7 +111,7 @@ void ReorderBuffer::commit() {
             flush_all();
             break;
         case RoBType::kHalt:
-            std::cout << (rf->get_val(10) & 0xff) << '\n'; 
+            std::cout << (rf->read_reg(10) & 0xff) << '\n'; 
             halt = true;
             break;
         default:
