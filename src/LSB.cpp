@@ -27,3 +27,6 @@ void LoadStoreBuffer::tick() {
         cir_que[i].busy.tick();
     }
 }
+void LoadStoreBuffer::set_flush() {
+    
+}

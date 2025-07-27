@@ -5,8 +5,6 @@
 #include "ROB.hpp"
 #include "RS.hpp"
 
-class ReservationStation;
-
 class ALU {
 private:
     bool busy;

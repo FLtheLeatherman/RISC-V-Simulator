@@ -30,17 +30,18 @@ void InstructionQueue::launchInst() {
     if (!cir_que[head].busy) return;
     if (!rs->available() || !rob->available()) return;
     Instruction decoded_inst;
-    decoded_inst.parse(cir_que[head]);
+    decoded_inst.parse(cir_que[head].inst);
     uint32_t robEntry;
+    uint32_t cur_pc = cir_que[head].pc;
     if (cir_que[head].inst == 0x0FF00513) {
-        robEntry = rob->insert(cir_que[head].inst, RoBType::kHalt);
+        robEntry = rob->insert(RoBType::kHalt, 0, 0, cur_pc);
     } else if ((cir_que[head].inst & 0x7F) == 0x63) {
-        robEntry = rob->insert(cir_que[head].inst, RoBType::kBranch); // 需修改！！传入跳到哪里去
+        robEntry = rob->insert(RoBType::kBranch, cir_que[head].jump, cur_pc + decoded_inst.imm, cur_pc); // 需修改！！传入跳到哪里去
     } else {
         // @todo
         // 其它类型操作
     }
-    busy[head] = false;
+    cir_que[head].busy = false;
     head = (head + 1) % QUE_SIZE;
 }
 void InstructionQueue::run() {
@@ -53,4 +54,10 @@ void InstructionQueue::tick() {
         cir_que[i].busy.tick();
         cir_que[i].inst.tick();
     }
+}
+void InstructionQueue::update_pc(uint32_t val) {
+    flush_pc = val;
+}
+void InstructionQueue::set_flush() {
+    
 }

@@ -13,10 +13,13 @@ class InstructionQueue {
 private:
     struct IQEntry {
         Register<bool> busy;
+        Register<bool> jump;
+        Register<uint32_t> pc;
         Register<uint32_t> inst;
     };
     static constexpr int QUE_SIZE = 16;
     Register<int> head, tail;
+    Register<uint32_t> flush_pc;
     IQEntry cir_que[16];
     Predictor *predictor;
     ReservationStation *rs;
@@ -28,6 +31,8 @@ public:
     void launchInst(); // 把已经在队中的指令发射
     void run();
     void tick();
+    void update_pc(uint32_t);
+    void set_flush();
 };
 
 #endif // IQ_HPP

@@ -19,6 +19,7 @@ public:
     void update(int);
     bool is_head(int);
     void tick();
+    void set_flush();
 };
 
 #endif

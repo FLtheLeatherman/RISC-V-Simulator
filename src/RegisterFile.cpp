@@ -27,3 +27,13 @@ int RegisterFile::get_tag(uint32_t id) {
 uint32_t RegisterFile::get_val(uint32_t id) {
     return registers[id].get_val();
 }
+void RegisterFile::write_reg(uint32_t reg, uint32_t val, int rob_entry) {
+    if (reg == 0) return;
+    registers[reg] = val;
+    if (busy[reg] && tag[reg] == rob_entry) {
+        clear[reg] = true;
+    }
+}
+void RegisterFile::set_flush() {
+    
+}

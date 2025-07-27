@@ -10,8 +10,6 @@ enum DataType {
     kTwoReg, kRegImm, kTwoRegImm, kImm,
 };
 
-class ALU;
-
 class ReservationStation {
 private:
     struct RSEntry {
@@ -36,6 +34,7 @@ public:
     void update(int, uint32_t); // 更新单个指令的值
     void run(); // 如果可以的话送到 ALU 进行计算.
     void tick();
+    void set_flush();
 };
 
 #endif // RS_HPP

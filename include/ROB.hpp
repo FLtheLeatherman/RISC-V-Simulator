@@ -4,14 +4,14 @@
 #include "Decoder.hpp"
 #include "RegisterFile.hpp"
 #include "Memory.hpp"
+#include "IQ.hpp"
+#include "LSB.hpp"
+#include "Predictor.hpp"
 
 enum RoBType {
-    kReg, kLoadByte, kLoadHalf, kLoadWord, kHalt, kBranch,
+    kReg, kStoreByte, kStoreHalf, kStoreWord, kHalt, kBranch, kJalr, kBranchSuccess, kBranchFail
 };
 
-
-// @todo
-// 把它修改为其它指令也能用，包括 load, store, 跳转等
 class ReorderBuffer {
 private:
     struct RoBEntry {
@@ -20,20 +20,33 @@ private:
         Register<RoBType> type;
         Register<uint32_t> val;
         Register<uint32_t> dest;
+        Register<uint32_t> pc;
+        Register<int> lsb_entry;
     };
     static constexpr int BUFFER_SIZE = 16;
     Register<int> head, tail;
     RoBEntry cir_que[BUFFER_SIZE];
-    RegisterFile *RF;
-    Memory *Mem;
+    RegisterFile *rf;
+    ReservationStation *rs;
+    InstructionQueue *iq;
+    LoadStoreBuffer *lsb;
+    Predictor *bp;
+    Memory *mem;
+    Register<bool> halt;
+    Register<bool> need_flush;
 public:
-    ReorderBuffer();
+    ReorderBuffer(ReservationStation *rs, Predictor *bp, LoadStoreBuffer *lsb, InstructionQueue *iq, RegisterFile *rf);
     void tick(); // 检查队头能否 commit 即可
     bool available(); // 目前能否插入
-    int insert(Instruction, RoBType); // 加入一条指令
-    void update(int, uint32_t); // 更新某条指令的状态
+    int insert(RoBType, uint32_t, uint32_t, uint32_t); // 加入一条指令
+    void update(int); // 更新某条指令的状态
+    void update_store(int, uint32_t, uint32_t);
+    void update(int, uint32_t);
     void commit(); // 把值 commit 一下
     void run();
+    void set_flush();
+    void flush();
+    void flush_all();
 };
 
 #endif // ROB_HPP

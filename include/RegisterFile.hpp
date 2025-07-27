@@ -8,7 +8,9 @@ class RegisterFile {
 private:
     static constexpr int REG_NUM = 32;
     Register<uint32_t> registers[REG_NUM];
-    int tag[REG_NUM];
+    Register<int> tag[REG_NUM];
+    Register<bool> busy[REG_NUM];
+    Register<bool> clear[REG_NUM];
 public:
     RegisterFile();
     void tick();
@@ -17,6 +19,8 @@ public:
     bool is_busy(uint32_t);
     int get_tag(uint32_t);
     uint32_t get_val(uint32_t);
+    void write_reg(uint32_t, uint32_t, int);
+    void set_flush();
 };
 
 #endif // REGISTER_FILE_HPP

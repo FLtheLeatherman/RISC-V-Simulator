@@ -111,3 +111,6 @@ void ReservationStation::tick() {
         info[i].Qk.tick();
     }
 }
+void ReservationStation::set_flush() {
+    
+}
