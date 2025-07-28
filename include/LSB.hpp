@@ -12,6 +12,7 @@ private:
     static constexpr int BUFFER_SIZE = 16;
     Register<int> head, tail;
     LSBEntry cir_que[BUFFER_SIZE];
+    Register<bool> need_flush;
 public:
     LoadStoreBuffer();
     bool available();
@@ -20,6 +21,8 @@ public:
     bool is_head(int);
     void tick();
     void set_flush();
+    void flush();
+    void run();
 };
 
 #endif
