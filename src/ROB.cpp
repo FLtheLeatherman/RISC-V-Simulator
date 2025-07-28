@@ -148,5 +148,5 @@ void ReorderBuffer::flush_all() {
     set_flush();
 }
 uint32_t ReorderBuffer::get_val(int rob_entry) {
-    return cir_que[rob].val;
+    return cir_que[rob_entry].val;
 }

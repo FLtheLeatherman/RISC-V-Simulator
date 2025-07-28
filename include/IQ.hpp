@@ -8,6 +8,7 @@
 #include "RS.hpp"
 #include "ROB.hpp"
 #include "LSB.hpp"
+#include "Memory.hpp"
 
 class InstructionQueue {
 private:
@@ -19,20 +20,24 @@ private:
     };
     static constexpr int QUE_SIZE = 16;
     Register<int> head, tail;
-    Register<uint32_t> flush_pc;
     IQEntry cir_que[16];
+    Register<uint32_t> pc;
+    Register<bool> need_flush;
+    Register<uint32_t> flush_pc;
     Predictor *predictor;
     ReservationStation *rs;
     ReorderBuffer *rob;
     LoadStoreBuffer *lsb;
+    Memory *mem;
 public:
-    InstructionQueue();
-    int insertInst(uint32_t); // 尝试向队中插入一个新指令，返回下一步的 PC 增量
-    void launchInst(); // 把已经在队中的指令发射
+    InstructionQueue(ReservationStation*, ReorderBuffer*, LoadStoreBuffer*, Predictor*, Memory*);
+    void insert_inst(uint32_t); // 尝试向队中插入一个新指令
+    void launch_inst(); // 把已经在队中的指令发射
     void run();
     void tick();
     void update_pc(uint32_t);
     void set_flush();
+    void flush();
 };
 
 #endif // IQ_HPP

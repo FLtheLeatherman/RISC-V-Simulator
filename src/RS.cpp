@@ -102,7 +102,7 @@ void ReservationStation::run() {
                 info[i].busy = false;
             } else if ((int)info[i].calc_type < 19) {
                 if (info[i].data_type == kRegImm) {
-                    info[i].A = alu.run(CalcType::kAdd, info[i].Vj, info[i].A);
+                    info[i].A = alu->run(CalcType::kAdd, info[i].Vj, info[i].A);
                     info[i].data_type = DataType::kImm;
                     info[i].Vj = rob->get_val(info[i].rob_entry);
                 } else {
@@ -128,7 +128,7 @@ void ReservationStation::run() {
                     }
                 }
             } else {
-                res = alu.run(CalcType::kAdd, info[i].Vk, info[i].A);
+                res = alu->run(CalcType::kAdd, info[i].Vk, info[i].A);
                 rob->update(info[i].rob_entry, info[i].Vj, res);
                 info[i].busy = false;
             }
