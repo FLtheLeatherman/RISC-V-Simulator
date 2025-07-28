@@ -6,7 +6,7 @@
 #include <string>
 
 enum CalcType {
-    kAdd, kSub, kShiftL, kShiftR, kAnd, kOr, kXor, kEqual, kNotEqual, kLess, kLessEqual, kGreater, kGreaterEqual, kDefault,
+    kAdd, kSub, kShiftL, kShiftR, kShiftRArith, kAnd, kOr, kXor, kEqual, kNotEqual, kLess, kLessUnsigned, kGreaterEqual, kGreaterEqualUnsigned, kLb, kLh, kLw, kLbu, kLhu, kSb, kSh, kSw, kDefault,
 };
 
 class ReorderBuffer;

@@ -1,12 +1,15 @@
 #include "ALU.hpp"
 
+ALU::ALU() {
+    busy = false;
+}
 bool ALU::available() {
     return !busy;
 }
 void ALU::tick() {
     busy = false;
 }
-void ALU::run(CalcType type, uint32_t val1, uint32_t val2, int robEntry) {
+uint32_t ALU::run(CalcType type, uint32_t val1, uint32_t val2) {
     uint32_t res;
     busy = true;
     switch (type){
@@ -22,6 +25,8 @@ void ALU::run(CalcType type, uint32_t val1, uint32_t val2, int robEntry) {
         case kShiftR:
             res = val1 >> val2;
             break;
+        case kShiftRArith:
+            res = int(val1) >> val2;
         case kAnd:
             res = val1 & val2;
             break;
@@ -38,22 +43,19 @@ void ALU::run(CalcType type, uint32_t val1, uint32_t val2, int robEntry) {
             res = val1 != val2;
             break;
         case kLess:
+            res = (int)val1 < (int)val2;
+            break;
+        case kLessUnsigned:
             res = val1 < val2;
             break;
-        case kLessEqual:
-            res = val1 <= val2;
-            break;
-        case kGreater:
-            res = val1 > val2;
-            break;
         case kGreaterEqual:
+            res = (int)val1 >= (int)val2;
+            break;
+        case kGreaterEqualUnsigned:
             res = val1 >= val2;
             break;
         default:
             break;
     }
-    rob->update(robEntry, res);
-    rs->update(robEntry, res);
-    // @todo
-    // call lsb to update next
+    return res;
 }

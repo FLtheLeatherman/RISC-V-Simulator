@@ -11,8 +11,8 @@ private:
     Register<int> tag[REG_NUM];
     Register<bool> busy[REG_NUM];
     Register<bool> need_flush;
-    Register<bool> write_tag[REG_NUM];
-    Register<bool> clear_tag[REG_NUM];
+    Register<bool> need_write[REG_NUM];
+    Register<bool> need_clear[REG_NUM];
 public:
     RegisterFile();
     void tick();

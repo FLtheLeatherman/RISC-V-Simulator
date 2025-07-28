@@ -13,26 +13,26 @@ void RegisterFile::tick() {
     }
     need_flush.tick();
     for (int i = 0; i < REG_NUM; ++i) {
-        write_tag[i].tick();
-        clear_tag[i].tick();
-        if (write_tag[i]) {
+        need_write[i].tick();
+        need_clear[i].tick();
+        if (need_write[i]) {
             busy[i] = true;
-        } else if (clear_tag[i]) {
-            busy[u] = false;
+        } else if (need_clear[i]) {
+            busy[i] = false;
             tag[i] = -1;
         }
-        write_tag[i] = false;
-        clear_tag[i] = false;
+        need_write[i] = false;
+        need_clear[i] = false;
         busy[i].tick();
         tag[i].tick();
         registers[i].tick();
     }
 }
 void RegisterFile::write_tag(uint32_t id, int rob_entry) {
-    if (reg == 0) return;
-    write_tag[id] = true;
+    if (id == 0) return;
+    need_write[id] = true;
     tag[id] = rob_entry;
-    busy[reg] = true;
+    busy[id] = true;
 }
 int RegisterFile::read_tag(uint32_t id) {
     return tag[id];
@@ -44,7 +44,7 @@ void RegisterFile::write_reg(uint32_t reg, uint32_t val, int rob_entry) {
     if (reg == 0) return;
     registers[reg] = val;
     if (busy[reg] && tag[reg] == rob_entry) {
-        clear_tag[reg] = true;
+        need_clear[reg] = true;
     }
 }
 void RegisterFile::set_flush() {

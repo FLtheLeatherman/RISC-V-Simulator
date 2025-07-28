@@ -147,3 +147,6 @@ void ReorderBuffer::flush_all() {
     lsb->set_flush();
     set_flush();
 }
+uint32_t ReorderBuffer::get_val(int rob_entry) {
+    return cir_que[rob].val;
+}

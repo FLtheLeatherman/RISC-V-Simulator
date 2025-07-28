@@ -47,6 +47,7 @@ public:
     void set_flush();
     void flush();
     void flush_all();
+    uint32_t get_val(int);
 };
 
 #endif // ROB_HPP
