@@ -1,6 +1,6 @@
 #include "IQ.hpp"
 
-InstructionQueue::InstructionQueue(ReservationStation* rs_, ReorderBuffer* rob_, LoadStoreBuffer* lsb_, Predictor* predictor_, Memory* mem_) {
+void InstructionQueue::init(ReservationStation* rs_, ReorderBuffer* rob_, LoadStoreBuffer* lsb_, Predictor* predictor_, Memory* mem_) {
     rs = rs_;
     rob = rob_;
     lsb = lsb_;
@@ -183,9 +183,9 @@ void InstructionQueue::run() {
     launch_inst();
 }
 void InstructionQueue::tick() {
-    if (need_flush) {
-        flush();
-    }
+    // if (need_flush) {
+    //     flush();
+    // }
     head.tick(), tail.tick();
     pc.tick();
     flush_pc.tick();
@@ -196,10 +196,10 @@ void InstructionQueue::tick() {
         cir_que[i].pc.tick();
         cir_que[i].jump.tick();
     }
-    if (need_flush) {
-        return;
-    }
-    run();
+    // if (need_flush) {
+    //     return;
+    // }
+    // run();
 }
 void InstructionQueue::update_pc(uint32_t val) {
     flush_pc = val;

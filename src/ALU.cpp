@@ -1,6 +1,6 @@
 #include "ALU.hpp"
 
-ALU::ALU() {
+void ALU::init() {
     busy = false;
 }
 bool ALU::available() {

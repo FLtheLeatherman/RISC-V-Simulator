@@ -16,5 +16,6 @@ add_executable(code
     src/ROB.cpp
     src/IQ.cpp
     src/LSB.cpp
+    src/CPU.cpp
     src/main.cpp
 )

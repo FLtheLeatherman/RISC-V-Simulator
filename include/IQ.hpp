@@ -30,7 +30,7 @@ private:
     LoadStoreBuffer *lsb;
     Memory *mem;
 public:
-    InstructionQueue(ReservationStation*, ReorderBuffer*, LoadStoreBuffer*, Predictor*, Memory*);
+    void init(ReservationStation*, ReorderBuffer*, LoadStoreBuffer*, Predictor*, Memory*);
     void insert_inst(uint32_t); // 尝试向队中插入一个新指令
     void launch_inst(); // 把已经在队中的指令发射
     void run();

@@ -1,6 +1,6 @@
 #include "RegisterFile.hpp"
 
-RegisterFile::RegisterFile() {
+void RegisterFile::init() {
     for (int i = 0; i < REG_NUM; ++i) {
         registers[i] = 0;
         busy[i] = false;
@@ -8,9 +8,9 @@ RegisterFile::RegisterFile() {
     }
 }
 void RegisterFile::tick() {
-    if (need_flush) {
-        flush();
-    }
+    // if (need_flush) {
+    //     flush();
+    // }
     need_flush.tick();
     for (int i = 0; i < REG_NUM; ++i) {
         need_write[i].tick();

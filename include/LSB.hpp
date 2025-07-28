@@ -14,7 +14,7 @@ private:
     LSBEntry cir_que[BUFFER_SIZE];
     Register<bool> need_flush;
 public:
-    LoadStoreBuffer();
+    void init();
     bool available();
     int insert();
     void update(int);

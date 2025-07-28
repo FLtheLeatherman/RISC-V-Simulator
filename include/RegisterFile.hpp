@@ -14,7 +14,7 @@ private:
     Register<bool> need_write[REG_NUM];
     Register<bool> need_clear[REG_NUM];
 public:
-    RegisterFile();
+    void init();
     void tick();
     void write_tag(uint32_t, int);
     int read_tag(uint32_t);

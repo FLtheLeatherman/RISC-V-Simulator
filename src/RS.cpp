@@ -1,6 +1,6 @@
 #include "RS.hpp"
 
-ReservationStation::ReservationStation(ALU *alu_, RegisterFile *rf_, ReorderBuffer *rob_, LoadStoreBuffer *lsb_, Memory *mem_) {
+void ReservationStation::init(ALU *alu_, RegisterFile *rf_, ReorderBuffer *rob_, LoadStoreBuffer *lsb_, Memory *mem_) {
     alu = alu_;
     rf = rf_;
     rob = rob_;
@@ -137,11 +137,11 @@ void ReservationStation::run() {
     }
 }
 void ReservationStation::tick() {
-    if (need_flush) {
-        flush();
-    } else {
-        run();
-    }
+    // if (need_flush) {
+    //     flush();
+    // } else {
+    //     run();
+    // }
     need_flush.tick();
     for (int i = 0; i < STATION_SIZE; ++i) {
         info[i].rob_entry.tick();

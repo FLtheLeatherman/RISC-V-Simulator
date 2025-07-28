@@ -32,7 +32,7 @@ private:
     LoadStoreBuffer *lsb;
     Memory *mem;
 public:
-    ReservationStation(ALU*, RegisterFile*, ReorderBuffer*, LoadStoreBuffer*, Memory*);
+    void init(ALU*, RegisterFile*, ReorderBuffer*, LoadStoreBuffer*, Memory*);
     bool available();
     void insert(CalcType, DataType, uint32_t, uint32_t, uint32_t, int); // 加入一条指令
     void update(int, uint32_t); // 更新单个指令的值

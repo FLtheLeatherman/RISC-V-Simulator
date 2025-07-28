@@ -9,7 +9,7 @@ class ALU {
 private:
     bool busy;
 public:
-    ALU();
+    void init();
     bool available();
     void tick();
     uint32_t run(CalcType, uint32_t, uint32_t); // 运算并广播

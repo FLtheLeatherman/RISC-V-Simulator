@@ -1,6 +1,6 @@
 #include "ROB.hpp"
 
-ReorderBuffer::ReorderBuffer(ReservationStation *rs_, Predictor *bp_, LoadStoreBuffer *lsb_, InstructionQueue *iq_, RegisterFile *rf_) {
+void ReorderBuffer::init(ReservationStation *rs_, Predictor *bp_, LoadStoreBuffer *lsb_, InstructionQueue *iq_, RegisterFile *rf_) {
     rs = rs_;
     bp = bp_;
     lsb = lsb_;
@@ -15,11 +15,11 @@ ReorderBuffer::ReorderBuffer(ReservationStation *rs_, Predictor *bp_, LoadStoreB
     }
 }
 void ReorderBuffer::tick() {
-    if (need_flush) {
-        flush();
-    } else {
-        run();
-    }
+    // if (need_flush) {
+    //     flush();
+    // } else {
+    //     run();
+    // }
     head.tick(), tail.tick();
     for (int i = 0; i < BUFFER_SIZE; ++i) {
         cir_que[i].ready.tick();
@@ -149,4 +149,7 @@ void ReorderBuffer::flush_all() {
 }
 uint32_t ReorderBuffer::get_val(int rob_entry) {
     return cir_que[rob_entry].val;
+}
+bool ReorderBuffer::is_halt() {
+    return halt;
 }

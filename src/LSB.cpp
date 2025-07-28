@@ -1,6 +1,6 @@
 #include "LSB.hpp"
 
-LoadStoreBuffer::LoadStoreBuffer() {
+void LoadStoreBuffer::init() {
     head = 0;
     tail = 0;
 }

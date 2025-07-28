@@ -1,13 +1,29 @@
 #ifndef CPU_HPP
 #define CPU_HPP
 
+#include "Utility.hpp"
+#include "IQ.hpp"
+#include "LSB.hpp"
+#include "ROB.hpp"
+#include "RegisterFile.hpp"
+#include "ALU.hpp"
+#include "Predictor.hpp"
+#include "RS.hpp"
+
 class CPU {
 private:
-    uint32_t program_counter;
     uint32_t clock;
+    bool halt;
+    InstructionQueue *iq;
+    LoadStoreBuffer *lsb;
+    ReorderBuffer *rob;
+    RegisterFile *rf;
+    ALU *alu;
+    Predictor *bp;
+    ReservationStation *rs;
 public:
-    CPU();
+    CPU(InstructionQueue*, LoadStoreBuffer*, ReorderBuffer*, RegisterFile*, ALU*, Predictor*, ReservationStation*);
     void run();
-}
+};
 
-#endif CPU_HPP
+#endif // CPU_HPP
