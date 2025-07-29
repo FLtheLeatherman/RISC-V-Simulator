@@ -40,6 +40,7 @@ public:
     void tick();
     void set_flush();
     void flush();
+    void print();
 };
 
 #endif // RS_HPP

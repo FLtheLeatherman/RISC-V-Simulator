@@ -65,3 +65,8 @@ void RegisterFile::run() {
         flush();
     }
 }
+void RegisterFile::print() {
+    for (int i = 0; i < REG_NUM; ++i) {
+        std::cout << i << ':' << registers[i] << ' ' << busy[i] << ' ' << tag[i] << std::endl;
+    }
+}

@@ -24,17 +24,18 @@ void InstructionQueue::insert_inst(uint32_t inst) {
     decoded_inst.parse(inst);
     if (decoded_inst.op == Opcode::kJAL) {
         int tmp;
+        // std::cout << decoded_inst.imm << std::endl;
         if (decoded_inst.imm & 0x80000000) {
-            tmp = (int)decoded_inst.imm - 0x100000000;
+            tmp = (int)(decoded_inst.imm - 0x100000000);
         } else {
             tmp = (int)decoded_inst.imm;
         }
+        // std::cout << tmp << std::endl;
         pc = pc + tmp;
     } else if ((inst & 0x7F) == 0x63) {
         bool jump_flag = predictor->predict();
         cir_que[tail].jump = jump_flag;
         if (jump_flag) {
-            
             pc = pc + decoded_inst.imm;
         } else {
             pc = pc + 4;
@@ -47,8 +48,10 @@ void InstructionQueue::insert_inst(uint32_t inst) {
 void InstructionQueue::launch_inst() {
     if (!cir_que[head].busy) return;
     if (!rs->available() || !rob->available()) return;
+    // std::cout << "launch:" << head << ' ' << cir_que[head].inst << std::endl;
     Instruction decoded_inst;
     decoded_inst.parse(cir_que[head].inst);
+    // std::cout << decoded_inst.imm << '\n';
     uint32_t rob_entry;
     uint32_t cur_pc = cir_que[head].pc;
     if (cir_que[head].inst == 0x0FF00513) {
@@ -82,6 +85,7 @@ void InstructionQueue::launch_inst() {
     } else {
         rob_entry = rob->insert(RoBType::kReg, 0, decoded_inst.rd, cur_pc);
     }
+    // std::cout << decoded_inst.op << '\n';
     switch (decoded_inst.op) {
         case Opcode::kLUI:
             rob->update(rob_entry, decoded_inst.imm);
@@ -115,72 +119,103 @@ void InstructionQueue::launch_inst() {
             break;
         case Opcode::kLB:
             rs->insert(CalcType::kLb, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kLH:
             rs->insert(CalcType::kLh, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kLW:
             rs->insert(CalcType::kLw, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kLBU:
             rs->insert(CalcType::kLbu, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kLHU:
             rs->insert(CalcType::kLhu, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kSB:
             rs->insert(CalcType::kSb, DataType::kTwoRegImm, decoded_inst.rs2, decoded_inst.rs1, decoded_inst.imm, rob_entry);
+            break;
         case Opcode::kSH:
             rs->insert(CalcType::kSh, DataType::kTwoRegImm, decoded_inst.rs2, decoded_inst.rs1, decoded_inst.imm, rob_entry);
+            break;
         case Opcode::kSW:
             rs->insert(CalcType::kSw, DataType::kTwoRegImm, decoded_inst.rs2, decoded_inst.rs1, decoded_inst.imm, rob_entry);
+            break;
         case Opcode::kADDI:
+            // std::cout << "GOOD!\n";
             rs->insert(CalcType::kAdd, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kSLTI:
             rs->insert(CalcType::kLess, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kSLTIU:
             rs->insert(CalcType::kLessUnsigned, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kXORI:
             rs->insert(CalcType::kXor, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kORI:
             rs->insert(CalcType::kOr, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kANDI:
             rs->insert(CalcType::kAnd, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kSLLI:
             rs->insert(CalcType::kShiftL, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kSRLI:
             rs->insert(CalcType::kShiftR, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kSRAI:
             rs->insert(CalcType::kShiftRArith, DataType::kRegImm, decoded_inst.rs1, decoded_inst.imm, 0, rob_entry);
+            break;
         case Opcode::kADD:
             rs->insert(CalcType::kAdd, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kSUB:
             rs->insert(CalcType::kSub, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kSLL:
             rs->insert(CalcType::kShiftL, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kSLT:
             rs->insert(CalcType::kLess, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kSLTU:
             rs->insert(CalcType::kLessUnsigned, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kXOR:
             rs->insert(CalcType::kXor, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kSRL:
             rs->insert(CalcType::kShiftR, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kSRA:
             rs->insert(CalcType::kShiftRArith, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kOR:
             rs->insert(CalcType::kOr, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         case Opcode::kAND:
             rs->insert(CalcType::kAnd, DataType::kTwoReg, decoded_inst.rs1, decoded_inst.rs2, 0, rob_entry);
+            break;
         default:
             break;
     }
     cir_que[head].busy = false;
     head = (head + 1) % QUE_SIZE;
+    // std::cout << "ALL GOOD\n";
 }
 void InstructionQueue::run() {
     if (need_flush) {
         flush();
         return;
     }
-    uint32_t cur_inst = mem->read_word(pc);
-    insert_inst(cur_inst);
     launch_inst();
+    uint32_t cur_inst = mem->read_word(pc);
+    std::cout << pc << ':';
+    std::cout << cur_inst << std::endl;
+    insert_inst(cur_inst);
 }
 void InstructionQueue::tick() {
     // if (need_flush) {

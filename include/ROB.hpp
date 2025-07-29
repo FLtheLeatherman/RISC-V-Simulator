@@ -35,7 +35,7 @@ private:
     Register<bool> halt;
     Register<bool> need_flush;
 public:
-    void init(ReservationStation*, Predictor*, LoadStoreBuffer*, InstructionQueue*, RegisterFile*);
+    void init(ReservationStation*, Predictor*, LoadStoreBuffer*, InstructionQueue*, RegisterFile*, Memory*);
     void tick(); // 检查队头能否 commit 即可
     bool available(); // 目前能否插入
     int insert(RoBType, uint32_t, uint32_t, uint32_t); // 加入一条指令
@@ -49,6 +49,7 @@ public:
     void flush_all();
     uint32_t get_val(int);
     bool is_halt();
+    void print();
 };
 
 #endif // ROB_HPP

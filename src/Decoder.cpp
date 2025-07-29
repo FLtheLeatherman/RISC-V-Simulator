@@ -1,9 +1,10 @@
 #include "Decoder.hpp"
 
 void Instruction::parse(uint32_t inst) {
-    uint32_t opNum = inst & 0x7F;
+    uint32_t op_num = inst & 0x7F;
     uint32_t funct3, funct7;
-    switch (opNum) {
+    // std::cout << "?" << op_num << '\n';
+    switch (op_num) {
         case 0x37: // LUI
             op = Opcode::kLUI;
             rd = (inst >> 7) & 0x1F;
@@ -18,24 +19,28 @@ void Instruction::parse(uint32_t inst) {
             op = Opcode::kJAL;
             rd = (inst >> 7) & 0x1F;
             imm = (inst & 0xFF000) // [19:12]
-                | ((inst & 0x100000) >> 10) // [11]
+                | ((inst & 0x100000) >> 9) // [11]
                 | ((inst & 0x7FE00000) >> 20) // [10:1]
                 | ((inst & 0x80000000) >> 11); // [20]
+            // std::cout << (inst & 0xFF000) << ' ' << ((inst & 0x100000) >> 10) << ' ' << ((inst & 0x7FE00000) >> 20) << ' ' << ((inst & 0x80000000) >> 11) << std::endl;
+            if (imm & 0x100000) imm |= 0xFFE00000;
             break;
         case 0x67: // JALR
             op = Opcode::kJALR;
             rd = (inst >> 7) & 0x1F;
             rs1 = (inst >> 15) & 0x1F;
             imm = inst >> 20;
+            if (imm & 0x800) imm |= 0xFFFFF000;
             break;
         case 0x63: // B-type, from beq to bgeu
             funct3 = (inst >> 12) & 0x7;
             rs1 = (inst >> 15) & 0x1F;
             rs2 = (inst >> 20) & 0x1F;
-            imm = ((inst & 0x80) << 3) // [11]
-                | ((inst & 0xF00) >> 8) // [4:1]
-                | ((inst & 0x7E000000) >> 21) // [10:5]
-                | ((inst & 0x80000000) >> 20); // [20]
+            imm = ((inst & 0x80) << 4) // [11]
+                | ((inst & 0xF00) >> 7) // [4:1]
+                | ((inst & 0x7E000000) >> 20) // [10:5]
+                | ((inst & 0x80000000) >> 19); // [12]
+            if (imm & 0x1000) imm |= 0xFFFFE000;
             switch (funct3) {
                 case 0x0: // beq
                     op = Opcode::kBEQ;
@@ -64,6 +69,7 @@ void Instruction::parse(uint32_t inst) {
             rd = (inst >> 7) & 0x1F;
             rs1 = (inst >> 15) & 0x1F;
             imm = (inst >> 20) & 0xFFF;
+            if (imm & 0x800) imm |= 0xFFFFF000;
             switch (funct3) {
                 case 0x0: // lb
                     op = Opcode::kLB;
@@ -83,12 +89,13 @@ void Instruction::parse(uint32_t inst) {
                     break;
             }
             break;
-        case 0x32: // S-type, from sb to sh
+        case 0x23: // S-type, from sb to sh
             funct3 = (inst >> 12) & 0x7;
             rs1 = (inst >> 15) & 0x1F;
             rs2 = (inst >> 20) & 0x1F;
             imm = (inst >> 7) & 0x1f
                 | (inst >> 21) & 0x3F;
+            if (imm & 0x800) imm |= 0xFFFFF000;
             switch (funct3) {
                 case 0x0: // sb
                     op = Opcode::kSB;
@@ -103,11 +110,13 @@ void Instruction::parse(uint32_t inst) {
                     break;
                 }
             break;
-        case 0x31: // I-type, from addi to srai
+        case 0x13: // I-type, from addi to srai
             funct3 = (inst >> 12) & 0x7;   
             rd = (inst >> 7) & 0x1F;
             rs1 = (inst >> 15) & 0x1F;
             imm = inst >> 20;
+            if (imm & 0x800) imm |= 0xFFFFF000;
+            // std::cout << funct3 << "!!\n";
             switch (funct3) {
                 case 0x0: // addi
                     op = Opcode::kADDI;

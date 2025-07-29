@@ -31,11 +31,18 @@ void Memory::write(uint32_t addr, uint8_t imm) {
 }
 void Memory::write_half_word(uint32_t addr, uint16_t imm) {
     mem[addr] = imm & 0xFF;
-    mem[addr + 1] = imm & (0xFF << 8);
+    mem[addr + 1] = (imm & (0xFF << 8)) >> 8;
 }
 void Memory::write_word(uint32_t addr, uint32_t imm) {
+    // std::cout << "????" << addr << std::endl;
+    // std::cout << sizeof(mem) << std::endl;
+    // std::cout << &mem << std::endl;
     mem[addr] = imm & 0xFF;
-    mem[addr + 1] = imm & (0xFF << 8);
-    mem[addr + 2] = imm & (0xFF << 16);
-    mem[addr + 3] = imm & (0xFF << 24);
+    // std::cout << "??" << std::endl;
+    mem[addr + 1] = (imm & (0xFF << 8)) >> 8;
+    mem[addr + 2] = (imm & (0xFF << 16)) >> 16;
+    mem[addr + 3] = (imm & (0xFF << 24)) >> 24;
+}
+void Memory::test() {
+    std::cout << &mem << std::endl;
 }

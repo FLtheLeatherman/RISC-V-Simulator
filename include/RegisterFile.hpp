@@ -2,6 +2,7 @@
 #define REGISTER_FILE_HPP
 
 #include "Register.hpp"
+#include <iostream>
 
 // 0 寄存器应当总为 0.
 class RegisterFile {
@@ -24,6 +25,7 @@ public:
     void flush();
     bool readable(uint32_t, int);
     void run();
+    void print();
 };
 
 #endif // REGISTER_FILE_HPP

@@ -9,6 +9,7 @@
 #include "ALU.hpp"
 #include "Predictor.hpp"
 #include "RS.hpp"
+#include "Memory.hpp"
 
 class CPU {
 private:
@@ -21,8 +22,9 @@ private:
     ALU *alu;
     Predictor *bp;
     ReservationStation *rs;
+    Memory *mem;
 public:
-    CPU(InstructionQueue*, LoadStoreBuffer*, ReorderBuffer*, RegisterFile*, ALU*, Predictor*, ReservationStation*);
+    CPU(InstructionQueue*, LoadStoreBuffer*, ReorderBuffer*, RegisterFile*, ALU*, Predictor*, ReservationStation*, Memory*);
     void run();
 };
 

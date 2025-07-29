@@ -168,3 +168,10 @@ void ReservationStation::flush() {
     }
     need_flush = false;
 }
+void ReservationStation::print() {
+    std::cout << "RS:\n";
+    for (int i = 0; i < STATION_SIZE; ++i) {
+        if (!info[i].busy) continue;
+        std::cout << i << ':' << " rob_entry: " << info[i].rob_entry << '\n';
+    }
+}

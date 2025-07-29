@@ -1,11 +1,12 @@
 #include "ROB.hpp"
 
-void ReorderBuffer::init(ReservationStation *rs_, Predictor *bp_, LoadStoreBuffer *lsb_, InstructionQueue *iq_, RegisterFile *rf_) {
+void ReorderBuffer::init(ReservationStation *rs_, Predictor *bp_, LoadStoreBuffer *lsb_, InstructionQueue *iq_, RegisterFile *rf_, Memory *mem_) {
     rs = rs_;
     bp = bp_;
     lsb = lsb_;
     iq = iq_;
     rf = rf_;
+    mem = mem_;
     head = 0, tail = 0;
     halt = false;
     need_flush = false;
@@ -101,7 +102,9 @@ void ReorderBuffer::commit() {
             break;
         case RoBType::kStoreWord:
             if (!lsb->is_head(cir_que[head].lsb_entry)) return;
+            // std::cout << head << ' ' << cir_que[head].dest << ' ' << cir_que[head].val << std::endl;
             mem->write_word(cir_que[head].dest, cir_que[head].val);
+            // std::cout << "aa?\n";
             lsb->update(cir_que[head].lsb_entry);
             break;
         case RoBType::kJalr:
@@ -152,4 +155,13 @@ uint32_t ReorderBuffer::get_val(int rob_entry) {
 }
 bool ReorderBuffer::is_halt() {
     return halt;
+}
+void ReorderBuffer::print() {
+    std::cout << "ROB:\n";
+    int i = head;
+    do {
+        if (!cir_que[i].busy) return;
+        std::cout << i << ':' << std::hex << cir_que[i].pc << std::endl << std::dec;
+        i = (i + 1) % BUFFER_SIZE;
+    } while(i != tail);
 }

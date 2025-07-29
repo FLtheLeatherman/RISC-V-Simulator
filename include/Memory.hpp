@@ -17,6 +17,7 @@ public:
     void write(uint32_t, uint8_t);
     void write_half_word(uint32_t, uint16_t);
     void write_word(uint32_t, uint32_t);
+    void test();
 };
 
 #endif
