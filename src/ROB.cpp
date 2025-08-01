@@ -13,7 +13,13 @@ void ReorderBuffer::init(ReservationStation *rs_, Predictor *bp_, LoadStoreBuffe
     for (int i = 0; i < BUFFER_SIZE; ++i) {
         cir_que[i].busy = false;
         cir_que[i].ready = false;
+        cir_que[i].type = RoBType::kErr;
+        cir_que[i].val = 0;
+        cir_que[i].dest = 0;
+        cir_que[i].pc = 0;
+        cir_que[i].lsb_entry = 0;
     }
+    tick();
 }
 void ReorderBuffer::tick() {
     // if (need_flush) {
@@ -23,6 +29,9 @@ void ReorderBuffer::tick() {
     // }
     head.tick(), tail.tick();
     for (int i = 0; i < BUFFER_SIZE; ++i) {
+        // if (i == 4) {
+        //     std::cout << '?' << cir_que[i].type.get_val() << ' ' << cir_que[i].type.get_nxt() << '\n';
+        // }
         cir_que[i].ready.tick();
         cir_que[i].busy.tick();
         cir_que[i].type.tick();
@@ -39,6 +48,11 @@ bool ReorderBuffer::available() {
 }
 int ReorderBuffer::insert(RoBType type, uint32_t val, uint32_t dest, uint32_t pc) {
     cir_que[tail].type = type;
+    // cir_que[tail].type.set_nxt(type);
+    // cir_que[tail].type.tick();
+    // std::cout << "!!" << tail << std::endl;
+    // std::cout << "!!" << type << ' ' << std::hex << pc << std::dec << std::endl;
+    // std::cout << cir_que[tail].type.get_val() << ' ' << cir_que[tail].type.get_nxt() << std::endl;
     cir_que[tail].dest = dest;
     cir_que[tail].val = val;
     cir_que[tail].pc = pc;
@@ -72,10 +86,15 @@ void ReorderBuffer::update(int rob_entry, uint32_t val) {
     cir_que[rob_entry].val = val;
     cir_que[rob_entry].ready = true;
 }
+void ReorderBuffer::update_without_branch(int rob_entry, uint32_t val) {
+    cir_que[rob_entry].val = val;
+    cir_que[rob_entry].ready = true;
+}
 void ReorderBuffer::commit() {
     if (!cir_que[head].busy || !cir_que[head].ready) return;
     bool flush_flag = false;
     // std::cout << "commit: " << head << '\n';
+    // std::cout << cir_que[head].type << '\n';
     switch (cir_que[head].type) {
         case RoBType::kBranchSuccess:
             break;
@@ -88,6 +107,7 @@ void ReorderBuffer::commit() {
             flush_flag = true;
             break;
         case RoBType::kReg:
+            // std::cout << "Reg!" << '\n';
             rf->write_reg(cir_que[head].dest, cir_que[head].val, head);
             rs->update(head, cir_que[head].val);
             break;
@@ -124,6 +144,7 @@ void ReorderBuffer::commit() {
     }
     cir_que[head].busy = false;
     cir_que[head].ready = false;
+    cir_que[head].type = RoBType::kErr;
     head = (head + 1) % BUFFER_SIZE;
     if (flush_flag) flush_all();
 }
@@ -144,6 +165,7 @@ void ReorderBuffer::flush() {
     for (int i = 0; i < BUFFER_SIZE; ++i) {
         cir_que[i].busy = false;
         cir_que[i].ready = false;
+        cir_que[head].type = RoBType::kErr;
     }
     need_flush = false;
 }
@@ -163,10 +185,13 @@ bool ReorderBuffer::is_halt() {
 }
 void ReorderBuffer::print() {
     std::cout << "ROB:\n";
-    int i = head;
-    do {
-        if (!cir_que[i].busy) return;
-        std::cout << i << ": " << std::hex << cir_que[i].pc << std::dec << ' ' << cir_que[i].dest << ' ' << cir_que[i].ready << ' ' << cir_que[i].val << std::endl;
-        i = (i + 1) % BUFFER_SIZE;
-    } while(i != tail);
+    // int i = head;
+    // do {
+    // for (int i = 0; i < BUFFER_SIZE; ++i) {
+        // if (!cir_que[i].busy) return;
+        int i = 4;
+        std::cout << i << ": " << std::hex << cir_que[i].pc << std::dec << ' ' << cir_que[i].dest << ' ' << cir_que[i].ready << ' ' << cir_que[i].val << ' ' << cir_que[i].type.get_val() << ' ' << cir_que[i].type.get_nxt() << std::endl;
+        // i = (i + 1) % BUFFER_SIZE;
+    // }
+    // } while(i != tail);
 }

@@ -16,22 +16,27 @@ void CPU::run() {
     while (!halt) {
         clock++;
         // std::cout << "clock: " << clock << '\n';
-        std::cout.flush();
+        // std::cout.flush();
         iq->run();
+        // rob->print();
         // std::cout << "GOOD1" << std::endl;
         rs->run();
         // std::cout << "GOOD2" << std::endl;
         lsb->run();
         // std::cout << "GOOD3" << std::endl;
         rob->run();
+        // rob->print();
         // std::cout << "GOOD4" << std::endl;
         rf->run();
         
+        
+
         alu->tick();
 
         iq->tick();
         lsb->tick();
         rob->tick();
+        // rob->print();
         rf->tick();
         rs->tick();
 
@@ -41,6 +46,7 @@ void CPU::run() {
         // rf->print();
         // rob->print();
         // rs->print();
+        // std::cout.flush();
         // mem->test();
         // if (clock >= 100) exit(0);
     }

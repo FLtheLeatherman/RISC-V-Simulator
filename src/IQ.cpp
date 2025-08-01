@@ -85,11 +85,15 @@ void InstructionQueue::launch_inst() {
         rob_entry = rob->insert(RoBType::kReg, cur_pc + 4, decoded_inst.rd, cur_pc);
     } else {
         rob_entry = rob->insert(RoBType::kReg, 0, decoded_inst.rd, cur_pc);
+        // rob->print();
     }
+    // rob->print();
     // std::cout << decoded_inst.op << '\n';
     switch (decoded_inst.op) {
         case Opcode::kLUI:
-            rob->update(rob_entry, decoded_inst.imm);
+            rob->update_without_branch(rob_entry, decoded_inst.imm);
+            // std::cout << "??!\n";
+            // rob->print();
             break;
         case Opcode::kAUIPC:
             rob->update(rob_entry, cur_pc + decoded_inst.imm);
@@ -203,6 +207,7 @@ void InstructionQueue::launch_inst() {
         default:
             break;
     }
+    // rob->print();
     cir_que[head].busy = false;
     head = (head + 1) % QUE_SIZE;
     // std::cout << "ALL GOOD\n";
@@ -217,6 +222,7 @@ void InstructionQueue::run() {
     // std::cout << std::hex;
     // std::cout << pc << ": ";
     // std::cout << cur_inst << std::dec << std::endl;
+    // rob->print();
     insert_inst(cur_inst);
 }
 void InstructionQueue::tick() {

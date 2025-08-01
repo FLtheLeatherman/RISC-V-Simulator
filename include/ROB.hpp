@@ -9,7 +9,7 @@
 #include "Predictor.hpp"
 
 enum RoBType {
-    kReg, kStoreByte, kStoreHalf, kStoreWord, kHalt, kBranch, kJalr, kBranchSuccess, kBranchFail
+    kReg, kStoreByte, kStoreHalf, kStoreWord, kHalt, kBranch, kJalr, kBranchSuccess, kBranchFail, kErr
 };
 
 class ReorderBuffer {
@@ -17,11 +17,11 @@ private:
     struct RoBEntry {
         Register<bool> ready;
         Register<bool> busy;
-        Register<RoBType> type;
         Register<uint32_t> val;
         Register<uint32_t> dest;
         Register<uint32_t> pc;
         Register<int> lsb_entry;
+        Register<RoBType> type;
     };
     static constexpr int BUFFER_SIZE = 16;
     Register<int> head, tail;
@@ -42,6 +42,7 @@ public:
     void update(int); // 更新某条指令的状态
     void update(int, uint32_t, uint32_t);
     void update(int, uint32_t);
+    void update_without_branch(int, uint32_t);
     void commit(); // 把值 commit 一下
     void run();
     void set_flush();

@@ -4,14 +4,14 @@
 #include <iostream>
 
 int main() {
-    // freopen("sample.data", "r", stdin);
+    // freopen("array_test2.data", "r", stdin);
     // freopen("log.out", "w", stdout);
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr), std::cout.tie(nullptr);
     Memory mem;
     mem.load();
     // std::cout << "load success" << '\n';
-    std::cout.flush();
+    // std::cout.flush();
     InstructionQueue iq;
     LoadStoreBuffer lsb;
     ReorderBuffer rob;
