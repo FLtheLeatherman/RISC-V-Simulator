@@ -75,6 +75,7 @@ void ReorderBuffer::update(int rob_entry, uint32_t val) {
 void ReorderBuffer::commit() {
     if (!cir_que[head].busy || !cir_que[head].ready) return;
     bool flush_flag = false;
+    // std::cout << "commit: " << head << '\n';
     switch (cir_que[head].type) {
         case RoBType::kBranchSuccess:
             break;
@@ -127,7 +128,10 @@ void ReorderBuffer::commit() {
     if (flush_flag) flush_all();
 }
 void ReorderBuffer::run() {
-    if (head == tail) return;
+    if (need_flush) {
+        flush();
+        return;
+    }
     if (cir_que[head].ready) {
         commit();
     }
@@ -144,6 +148,7 @@ void ReorderBuffer::flush() {
     need_flush = false;
 }
 void ReorderBuffer::flush_all() {
+    // std::cout << '!' << "flush" << '\n';
     rf->set_flush();
     iq->set_flush();
     rs->set_flush();
@@ -161,7 +166,7 @@ void ReorderBuffer::print() {
     int i = head;
     do {
         if (!cir_que[i].busy) return;
-        std::cout << i << ':' << std::hex << cir_que[i].pc << std::endl << std::dec;
+        std::cout << i << ": " << std::hex << cir_que[i].pc << std::dec << ' ' << cir_que[i].dest << ' ' << cir_que[i].ready << ' ' << cir_que[i].val << std::endl;
         i = (i + 1) % BUFFER_SIZE;
     } while(i != tail);
 }

@@ -93,8 +93,10 @@ void Instruction::parse(uint32_t inst) {
             funct3 = (inst >> 12) & 0x7;
             rs1 = (inst >> 15) & 0x1F;
             rs2 = (inst >> 20) & 0x1F;
-            imm = (inst >> 7) & 0x1f
-                | (inst >> 21) & 0x3F;
+            imm = (inst >> 7) & 0x1F
+                | (((inst >> 25) & 0x7F) << 5);
+            // std::cout << std::bitset<32>(inst) << '\n'; 
+            // std::cout << '?' << ((inst >> 7) & 0x1F) << ' ' << ((inst >> 20) & 0x7F) << '\n';
             if (imm & 0x800) imm |= 0xFFFFF000;
             switch (funct3) {
                 case 0x0: // sb

@@ -48,7 +48,7 @@ void InstructionQueue::insert_inst(uint32_t inst) {
 void InstructionQueue::launch_inst() {
     if (!cir_que[head].busy) return;
     if (!rs->available() || !rob->available()) return;
-    // std::cout << "launch:" << head << ' ' << cir_que[head].inst << std::endl;
+    // std::cout << "launch: " << std::hex << cir_que[head].inst << std::dec << std::endl;
     Instruction decoded_inst;
     decoded_inst.parse(cir_que[head].inst);
     // std::cout << decoded_inst.imm << '\n';
@@ -70,6 +70,7 @@ void InstructionQueue::launch_inst() {
             lsb_entry = lsb->insert();
             rob_entry = rob->insert(RoBType::kStoreHalf, lsb_entry, decoded_inst.rd, cur_pc);
         } else if (decoded_inst.op == kSW) {
+            // std::cout << "store word!" << '\n';
             lsb_entry = lsb->insert();
             rob_entry = rob->insert(RoBType::kStoreWord, lsb_entry, decoded_inst.rd, cur_pc);
         }
@@ -213,8 +214,9 @@ void InstructionQueue::run() {
     }
     launch_inst();
     uint32_t cur_inst = mem->read_word(pc);
-    std::cout << pc << ':';
-    std::cout << cur_inst << std::endl;
+    // std::cout << std::hex;
+    // std::cout << pc << ": ";
+    // std::cout << cur_inst << std::dec << std::endl;
     insert_inst(cur_inst);
 }
 void InstructionQueue::tick() {

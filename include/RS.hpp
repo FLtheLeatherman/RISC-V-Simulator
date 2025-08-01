@@ -26,6 +26,8 @@ private:
     static constexpr int STATION_SIZE = 16;
     RSEntry info[STATION_SIZE];
     Register<bool> need_flush;
+    Register<bool> need_update;
+    Register<int> update_entry, update_val;
     ALU *alu;
     RegisterFile *rf;
     ReorderBuffer *rob;
@@ -36,6 +38,7 @@ public:
     bool available();
     void insert(CalcType, DataType, uint32_t, uint32_t, uint32_t, int); // 加入一条指令
     void update(int, uint32_t); // 更新单个指令的值
+    void update();
     void run(); // 如果可以的话送到 ALU 进行计算.
     void tick();
     void set_flush();

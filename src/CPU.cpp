@@ -15,7 +15,7 @@ CPU::CPU(InstructionQueue *iq_, LoadStoreBuffer *lsb_, ReorderBuffer *rob_, Regi
 void CPU::run() {
     while (!halt) {
         clock++;
-        std::cout << "clock: " << clock << '\n';
+        // std::cout << "clock: " << clock << '\n';
         std::cout.flush();
         iq->run();
         // std::cout << "GOOD1" << std::endl;
@@ -39,9 +39,9 @@ void CPU::run() {
             halt = true;
         }
         // rf->print();
-        rob->print();
-        rs->print();
+        // rob->print();
+        // rs->print();
         // mem->test();
-        if (clock >= 100) exit(0);
+        // if (clock >= 100) exit(0);
     }
 }

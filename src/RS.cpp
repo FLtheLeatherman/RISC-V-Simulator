@@ -70,19 +70,37 @@ void ReservationStation::insert(CalcType calc_type, DataType data_type, uint32_t
         info[pos].A = val3;
     }
 }
-void ReservationStation::update(int robEntry, uint32_t val) {
+void ReservationStation::update(int rob_entry, uint32_t val) {
+    need_update = true;
+    update_entry = rob_entry, update_val = val;
     for (int i = 0; i < STATION_SIZE; ++i) {
         if (info[i].busy) {
-            if (info[i].Qj == robEntry) {
+            if (info[i].Qj == rob_entry) {
                 info[i].Vj = val;
                 info[i].Qj = -1;
             }
-            if (info[i].Qk == robEntry) {
+            if (info[i].Qk == rob_entry) {
                 info[i].Vk = val;
                 info[i].Qk = -1;
             }
         }
     }
+}
+void ReservationStation::update() {
+    if (!need_update) return;
+    for (int i = 0; i < STATION_SIZE; ++i) {
+        if (info[i].busy) {
+            if (info[i].Qj == update_entry) {
+                info[i].Vj = update_val;
+                info[i].Qj = -1;
+            }
+            if (info[i].Qk == update_entry) {
+                info[i].Vk = update_val;
+                info[i].Qk = -1;
+            }
+        }
+    }
+    need_update = false;
 }
 void ReservationStation::run() {
     if (need_flush) {
@@ -128,7 +146,9 @@ void ReservationStation::run() {
                     }
                 }
             } else {
+                // std::cout << "!" << "store" << '\n';
                 res = alu->run(CalcType::kAdd, info[i].Vk, info[i].A);
+                // std::cout << res << '\n';
                 rob->update(info[i].rob_entry, info[i].Vj, res);
                 info[i].busy = false;
             }
@@ -143,6 +163,8 @@ void ReservationStation::tick() {
     //     run();
     // }
     need_flush.tick();
+    need_update.tick();
+    update_entry.tick(), update_val.tick();
     for (int i = 0; i < STATION_SIZE; ++i) {
         info[i].rob_entry.tick();
         info[i].calc_type.tick();
@@ -154,6 +176,7 @@ void ReservationStation::tick() {
         info[i].Qk.tick();
         info[i].data_type.tick();
     }
+    update();
 }
 void ReservationStation::set_flush() {
     need_flush = true;
@@ -170,8 +193,9 @@ void ReservationStation::flush() {
 }
 void ReservationStation::print() {
     std::cout << "RS:\n";
+    std::cout << "id\t\trob_entry\t\tVj\t\tVk\t\tQj\t\tQk\t\tA\n";
     for (int i = 0; i < STATION_SIZE; ++i) {
         if (!info[i].busy) continue;
-        std::cout << i << ':' << " rob_entry: " << info[i].rob_entry << '\n';
+        std::cout << i << "\t\t" << info[i].rob_entry << "\t\t" << info[i].Vj << "\t\t" << info[i].Vk << "\t\t" << info[i].Qj << "\t\t" << info[i].Qk << "\t\t" << info[i].A << '\n';
     }
 }
