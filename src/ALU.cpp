@@ -27,6 +27,7 @@ uint32_t ALU::run(CalcType type, uint32_t val1, uint32_t val2) {
             break;
         case kShiftRArith:
             res = int(val1) >> val2;
+            break;
         case kAnd:
             res = val1 & val2;
             break;

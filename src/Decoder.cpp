@@ -85,6 +85,7 @@ void Instruction::parse(uint32_t inst) {
                     break;
                 case 0x5: // lhu
                     op = Opcode::kLHU;
+                    break;
                 default:
                     break;
             }
@@ -190,8 +191,10 @@ void Instruction::parse(uint32_t inst) {
                     break;
                 case 0x6: // or
                     op = Opcode::kOR;
+                    break;
                 case 0x7: // and
                     op = Opcode::kAND;
+                    break;
                 default:
                     break;
             }

@@ -109,6 +109,7 @@ void ReservationStation::run() {
     }
     for (int i = 0; i < STATION_SIZE; ++i) {
         if (info[i].busy && info[i].Qj == -1 && info[i].Qk == -1) {
+            // std::cout << "!" << i << '\n';
             uint32_t res = 0;
             if ((int)info[i].calc_type < 14) {
                 if (info[i].data_type == DataType::kTwoReg) {
@@ -141,9 +142,8 @@ void ReservationStation::run() {
                         lsb->update(info[i].Vj);
                         rob->update(info[i].rob_entry, res);
                         info[i].busy = false;
-                    } else {
-                        continue;
                     }
+                    continue;
                 }
             } else {
                 // std::cout << "!" << "store" << '\n';

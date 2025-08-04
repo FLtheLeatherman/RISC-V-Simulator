@@ -4,8 +4,8 @@
 #include <iostream>
 
 int main() {
-    // freopen("array_test2.data", "r", stdin);
-    // freopen("log.out", "w", stdout);
+    freopen("bulgarian.data", "r", stdin);
+    freopen("log.out", "w", stdout);
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr), std::cout.tie(nullptr);
     Memory mem;

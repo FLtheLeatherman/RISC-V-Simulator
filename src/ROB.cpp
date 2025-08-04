@@ -77,6 +77,7 @@ void ReorderBuffer::update(int rob_entry, uint32_t val, uint32_t dest) {
 }
 void ReorderBuffer::update(int rob_entry, uint32_t val) {
     if (cir_que[rob_entry].type == RoBType::kBranch) {
+        // std::cout << "update!" << ' ' << rob_entry << '\n';
         if (val == cir_que[rob_entry].val) {
             cir_que[rob_entry].type = RoBType::kBranchSuccess;
         } else {
@@ -99,6 +100,7 @@ void ReorderBuffer::commit() {
         case RoBType::kBranchSuccess:
             break;
         case RoBType::kBranchFail:
+            // std::cout << head << std::endl;
             if (cir_que[head].val == 0) {
                 iq->update_pc(cir_que[head].pc + 4);
             } else {
@@ -132,6 +134,7 @@ void ReorderBuffer::commit() {
             rf->write_reg(cir_que[head].dest, cir_que[head].pc + 4, head);
             rs->update(head, cir_que[head].pc + 4);
             iq->update_pc(cir_que[head].val);
+            // std::cout << "!!!" << '\n'; 
             flush_all();
             break;
         case RoBType::kHalt:
@@ -185,13 +188,12 @@ bool ReorderBuffer::is_halt() {
 }
 void ReorderBuffer::print() {
     std::cout << "ROB:\n";
-    // int i = head;
-    // do {
-    // for (int i = 0; i < BUFFER_SIZE; ++i) {
-        // if (!cir_que[i].busy) return;
-        int i = 4;
+    std::cout << head << ' ' << tail << '\n';
+    // return;
+    int i = head;
+    do {
+        if (!cir_que[i].busy) return;
         std::cout << i << ": " << std::hex << cir_que[i].pc << std::dec << ' ' << cir_que[i].dest << ' ' << cir_que[i].ready << ' ' << cir_que[i].val << ' ' << cir_que[i].type.get_val() << ' ' << cir_que[i].type.get_nxt() << std::endl;
-        // i = (i + 1) % BUFFER_SIZE;
-    // }
-    // } while(i != tail);
+        i = (i + 1) % BUFFER_SIZE;
+    } while(i != tail);
 }
