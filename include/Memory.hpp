@@ -3,6 +3,7 @@
 
 #include "Utility.hpp"
 #include <iostream>
+#include <cassert>
 
 class Memory {
 private:

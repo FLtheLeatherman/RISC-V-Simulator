@@ -15,6 +15,7 @@ struct Instruction {
     uint32_t rs1, rs2;
     uint32_t imm;
     uint32_t shamt;
+    Instruction();
     void parse(uint32_t);
     uint32_t dest();
 };

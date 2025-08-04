@@ -8,6 +8,7 @@ class Register {
 private:
     T val, nxt;
 public:
+    Register();
     T get_val();
     T get_nxt();
     void set_val(T);
@@ -16,6 +17,11 @@ public:
     operator T();
     void operator =(T RHS);
 };
+
+template<typename T>
+Register<T>::Register() {
+    val = (T)0, nxt = (T)0;
+}
 
 template<typename T>
 T Register<T>::get_val() {

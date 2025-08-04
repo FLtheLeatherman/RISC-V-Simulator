@@ -1,5 +1,9 @@
 #include "Decoder.hpp"
 
+Instruction::Instruction() {
+    op = Opcode::kDEFAULT;
+    rd = rs1 = rs2 = imm = shamt = 0;
+}
 void Instruction::parse(uint32_t inst) {
     uint32_t op_num = inst & 0x7F;
     uint32_t funct3, funct7;

@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include)
 
+add_compile_options(-Werror)
+
 add_executable(code
     src/Memory.cpp
     src/Decoder.cpp

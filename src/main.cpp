@@ -4,10 +4,11 @@
 #include <iostream>
 
 int main() {
-    // freopen("bulgarian.data", "r", stdin);
+    // freopen("expr.data", "r", stdin);
     // freopen("log.out", "w", stdout);
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr), std::cout.tie(nullptr);
+    // std::cout << "?" << std::endl;
     Memory mem;
     mem.load();
     // std::cout << "load success" << '\n';

@@ -9,7 +9,7 @@ void Memory::load() {
         } else {
             for (int i = 0; i < str.size(); i += 3) {
                 write(addr, std::stoi(str.substr(i, 2), nullptr, 16));
-                addr ++;
+                addr++;
             }
         }
     }
@@ -18,22 +18,28 @@ Memory::Memory() {
     memset(mem, 0, sizeof(mem));
 }
 uint8_t Memory::read(uint32_t addr) {
+    assert(addr >= 0 && addr < 0x400000);
     return mem[addr];
 }
 uint16_t Memory::read_half_word(uint32_t addr) {
+    assert(addr >= 0 && addr + 1 < 0x400000);
     return mem[addr] | (mem[addr + 1] << 8);
 }
 uint32_t Memory::read_word(uint32_t addr) {
+    assert(addr >= 0 && addr + 3 < 0x400000);
     return mem[addr] | (mem[addr + 1] << 8) | (mem[addr + 2] << 16) | (mem[addr + 3] << 24);
 }
 void Memory::write(uint32_t addr, uint8_t imm) {
+    assert(addr >= 0 && addr < 0x400000);
     mem[addr] = imm;
 }
 void Memory::write_half_word(uint32_t addr, uint16_t imm) {
+    assert(addr >= 0 && addr + 1 < 0x400000);
     mem[addr] = imm & 0xFF;
     mem[addr + 1] = (imm & (0xFF << 8)) >> 8;
 }
 void Memory::write_word(uint32_t addr, uint32_t imm) {
+    assert(addr >= 0 && addr + 3 < 0x400000);
     // std::cout << "????" << addr << std::endl;
     // std::cout << sizeof(mem) << std::endl;
     // std::cout << &mem << std::endl;
