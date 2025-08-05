@@ -142,8 +142,9 @@ void ReservationStation::run() {
                         lsb->update(info[i].Vj);
                         rob->update(info[i].rob_entry, res);
                         info[i].busy = false;
+                    } else {
+                        continue;
                     }
-                    continue;
                 }
             } else {
                 // std::cout << "!" << "store" << '\n';

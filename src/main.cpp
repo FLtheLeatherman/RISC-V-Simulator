@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main() {
-    // freopen("expr.data", "r", stdin);
+    // freopen("bulgarian.data", "r", stdin);
     // freopen("log.out", "w", stdout);
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr), std::cout.tie(nullptr);
