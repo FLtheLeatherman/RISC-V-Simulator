@@ -73,18 +73,6 @@ void ReservationStation::insert(CalcType calc_type, DataType data_type, uint32_t
 void ReservationStation::update(int rob_entry, uint32_t val) {
     need_update = true;
     update_entry = rob_entry, update_val = val;
-    for (int i = 0; i < STATION_SIZE; ++i) {
-        if (info[i].busy) {
-            if (info[i].Qj == rob_entry) {
-                info[i].Vj = val;
-                info[i].Qj = -1;
-            }
-            if (info[i].Qk == rob_entry) {
-                info[i].Vk = val;
-                info[i].Qk = -1;
-            }
-        }
-    }
 }
 void ReservationStation::update() {
     if (!need_update) return;
